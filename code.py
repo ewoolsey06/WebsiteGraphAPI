@@ -2,9 +2,10 @@
 import requests
 import pandas as pd
 import plotly.graph_objects as go
-
 from datetime import datetime, timedelta
+import streamlit as st  # 1. Import Streamlit
 
+st.title("LI-COR Device Data Dashboard")
 
 TOKEN = "DV4iI3rviAxrn48ygbyqsYTIVx7NGTzan0bOewbnM47Y8B42"
 
@@ -22,9 +23,9 @@ devices_response = requests.get(
 )
 
 if devices_response.status_code != 200:
-    print("Could not retrieve devices.")
-    print(devices_response.text)
-    exit()
+    st.error("Could not retrieve devices.")
+    st.text(devices_response.text)
+    st.stop()
 
 devices_json = devices_response.json()
 devices = devices_json.get("devices", [])
@@ -47,16 +48,16 @@ for d in devices:
         params=params
     )
 
-    print(f"\nDevice: {name} ({serial})")
+    st.text(f"\nDevice: {name} ({serial})")
 
     if r.status_code != 200:
-        print("  - no data returned")
+        st.error("  - no data returned")
         continue
 
     data = r.json().get("data", [])
 
     if len(data) == 0:
-        print("  - no observations in this time window")
+        st.error("  - no observations in this time window")
         continue
 
     df_tmp = pd.DataFrame(data)
@@ -85,8 +86,8 @@ for d in devices:
 if all_devices_data:
     df = pd.concat(all_devices_data, ignore_index=True)
 else:
-    print("No data returned from any devices.")
-    exit()
+    st.text("No data returned from any devices.")
+    st.stop()
 
 # Rain sensor
 rain_total = df[
@@ -94,8 +95,8 @@ rain_total = df[
 ].copy()
 
 if rain_total.empty:
-    print("Rain sensor 22334782-1 not found.")
-    exit()
+    st.error("Rain sensor 22334782-1 not found.")
+    st.stop()
 
 rain_total = rain_total.sort_values("timestamp")
 
@@ -105,7 +106,7 @@ rain_total["timestamp"] = pd.to_datetime(
 
 rain_total = rain_total.set_index("timestamp")
 
-print(rain_total.head())
+st.text(rain_total.head())
 
 # Plot
 fig = go.Figure()
@@ -130,3 +131,10 @@ fig.update_layout(
 
 fig.write_html('rainfall_plot.html')
 print("Plot saved to rainfall_plot.html")
+
+
+if 'fig' in locals():
+    st.subheader("Rainfall / Device Analytics")
+    st.plotly_chart(fig, use_container_width=True)  # Renders the chart directly on the page
+else:
+    st.info("No data available to plot.")
