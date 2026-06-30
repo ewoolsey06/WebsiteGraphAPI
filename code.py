@@ -48,7 +48,7 @@ for d in devices:
         params=params
     )
 
-    st.text(f"\nDevice: {name} ({serial})")
+    print(f"\nDevice: {name} ({serial})")
 
     if r.status_code != 200:
         st.error("  - no data returned")
@@ -106,7 +106,7 @@ rain_total["timestamp"] = pd.to_datetime(
 
 rain_total = rain_total.set_index("timestamp")
 
-st.text(rain_total.head())
+print(rain_total.head())
 
 # Plot
 fig = go.Figure()
@@ -134,7 +134,7 @@ print("Plot saved to rainfall_plot.html")
 
 
 if 'fig' in locals():
-    st.subheader("Rainfall / Device Analytics")
+    st.subheader("Rainfall Data")
     st.plotly_chart(fig, use_container_width=True)  # Renders the chart directly on the page
 else:
     st.info("No data available to plot.")
