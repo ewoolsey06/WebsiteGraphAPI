@@ -38,8 +38,8 @@ for d in devices:
 
     params = {
         "loggers": serial,
-        "start_date_time": start.strftime("%Y-%m-%d %H:%M:%S"),
-        "end_date_time": end.strftime("%Y-%m-%d %H:%M:%S")
+        "start_date_time": "2026-06-01 00:00:00",
+        "end_date_time": "2026-06-08 00:00:00"
     }
 
     r = requests.get(
