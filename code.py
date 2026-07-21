@@ -173,25 +173,8 @@ ra_fig.update_layout(
 st.markdown(
     """
     <style>
-    /* 1. Target all tab buttons */
-    button[data-testid="stTabsTab"] {
-        color: #6b7280 !important;
-    }
-    
-    /* 2. Target the tab button on hover */
-    button[data-testid="stTabsTab"]:hover {
-        color: #005138 !important;
-    }
-    
-    /* 3. Target the active/selected tab button text */
-    button[data-testid="stTabsTab"][aria-selected="true"] {
-        color: #005138 !important;
-        font-weight: 600 !important;
-    }
-    
-    /* 4. Target the active tab underline indicator */
-    button[data-testid="stTabsTab"][aria-selected="true"] > div:first-child {
-        background-color: #005138 !important;
+    :root {
+        --st-primary-color: #005138 !important;
     }
     </style>
     """,
