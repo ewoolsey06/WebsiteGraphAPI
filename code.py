@@ -170,30 +170,34 @@ ra_fig.update_layout(
     template='plotly_white'
 )
 
-
 st.markdown(
     """
     <style>
-    button[role="tab"] {
-        color: #6b7280;
+    /* 1. Target all tab buttons */
+    button[data-testid="stTabsTab"] {
+        color: #6b7280 !important;
     }
-    button[role="tab"]:hover {
+    
+    /* 2. Target the tab button on hover */
+    button[data-testid="stTabsTab"]:hover {
         color: #005138 !important;
     }
-    button[role="tab"][aria-selected="true"] {
+    
+    /* 3. Target the active/selected tab button text */
+    button[data-testid="stTabsTab"][aria-selected="true"] {
         color: #005138 !important;
-        font-weight: 600;
+        font-weight: 600 !important;
     }
-    button[role="tab"][aria-selected="true"]::after {
-        background-color: #005138 !important;
-    }
-    div[data-baseweb="tab-highlight"] {
+    
+    /* 4. Target the active tab underline indicator */
+    button[data-testid="stTabsTab"][aria-selected="true"] > div:first-child {
         background-color: #005138 !important;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
 
 st.subheader("Rainfall / Device Analytics")
 rain_tab, acc_tab = st.tabs(["Total Rain", "Accumulated Rain"])
