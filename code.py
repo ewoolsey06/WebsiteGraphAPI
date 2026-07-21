@@ -106,12 +106,12 @@ rain_total["timestamp"] = pd.to_datetime(
 
 rain_total = rain_total.set_index("timestamp")
 
-print(rain_total.head())
+
 
 # Plot
-fig = go.Figure()
+rt_fig = go.Figure()
 
-fig.add_trace(go.Scatter(
+rt_fig.add_trace(go.Scatter(
     x=rain_total.index,
     y=rain_total["value"],
     mode='lines',
@@ -119,7 +119,7 @@ fig.add_trace(go.Scatter(
     line=dict(color='#1f77b4')
 ))
 
-fig.update_layout(
+rt_fig.update_layout(
     title="Rainfall Totals",
     xaxis_title="Day (last week)",
     yaxis_title="Rain (in)",
@@ -129,12 +129,78 @@ fig.update_layout(
     template='plotly_white'
 )
 
-fig.write_html('rainfall_plot.html')
-print("Plot saved to rainfall_plot.html")
+
+# Accumulated Rain sensor
+rain_acc = df[
+    df["sensor_sn"] == "22334782-2"
+].copy()
+
+if rain_acc.empty:
+    st.error("Accumulated Rain sensor 22334782-2 not found.")
+    st.stop()
+
+rain_acc = rain_acc.sort_values("timestamp")
+
+rain_acc["timestamp"] = pd.to_datetime(
+    rain_acc["timestamp"]
+)
+
+rain_acc = rain_acc.set_index("timestamp")
 
 
-if 'fig' in locals():
-    st.subheader("Rainfall Data")
-    st.plotly_chart(fig, use_container_width=True)  # Renders the chart directly on the page
-else:
-    st.info("No data available to plot.")
+
+# Plot
+ra_fig = go.Figure()
+
+ra_fig.add_trace(go.Scatter(
+    x=rain_acc.index,
+    y=rain_acc["value"],
+    mode='lines',
+    name='Rainfall',
+    line=dict(color='#1f77b4')
+))
+
+ra_fig.update_layout(
+    title="Accumulated Rainfall Totals",
+    xaxis_title="Day (last week)",
+    yaxis_title="Accumulated Rain (in)",
+    hovermode='x unified',
+    width=1000,
+    height=400,
+    template='plotly_white'
+)
+
+
+st.markdown(
+    """
+    <style>
+    button[role="tab"] {
+        color: #6b7280;
+    }
+    button[role="tab"]:hover {
+        color: #005138 !important;
+    }
+    button[role="tab"][aria-selected="true"] {
+        color: #005138 !important;
+        font-weight: 600;
+    }
+    button[role="tab"][aria-selected="true"]::after {
+        background-color: #005138 !important;
+    }
+    div[data-baseweb="tab-highlight"] {
+        background-color: #005138 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.subheader("Rainfall / Device Analytics")
+rain_tab, acc_tab = st.tabs(["Total Rain", "Accumulated Rain"])
+
+with rain_tab:
+    st.plotly_chart(rt_fig, use_container_width=True)
+
+with acc_tab:
+    st.plotly_chart(ra_fig, use_container_width=True)
+
