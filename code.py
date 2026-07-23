@@ -3,7 +3,9 @@ import requests
 import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
-import streamlit as st  # 1. Import Streamlit
+import streamlit as st  
+import folium
+from streamlit_folium import st_folium
 
 st.title("LI-COR Device Data Dashboard")
 
